@@ -8,6 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import {regtister} from "./controllers/auth.js";
 
 // CONFIGURATION
 const __filename = fileURLToPath(import.meta.url)  ; //so that we can use directory name in module kind of thing
@@ -34,3 +35,15 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({storage});
+
+// Routes 
+app.post("/auth/register",upload.single("picture"),register);
+
+// MOngoose 
+const PORT = process.env.PORT || 6001;
+mongoose.connect(process.env.MONGO_URL,{
+    useNewUrlParser :true,
+    useUnifiedTopology : true,
+}).then(()=>{
+    app.listen(PORT,()=>console.log(`Server Running on ${PORT} and DB connected`));
+}).catch((error)=>console.log(`${error} did not connect`))
