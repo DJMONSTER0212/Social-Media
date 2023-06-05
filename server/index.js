@@ -9,7 +9,10 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js"
+import userRoutes from "./routes/users.js"
+import postRoutes from "./routes/posts.js"
 import {register} from "./controllers/auth.js";
+import { verifyToken } from "./middleware/auth.js";
 
 // CONFIGURATION
 const __filename = fileURLToPath(import.meta.url)  ; //so that we can use directory name in module kind of thing
@@ -40,10 +43,11 @@ const upload = multer({storage});
 // Routes with file
 
 app.post("/auth/register",upload.single("picture"),register); // why not included in routes folder ? bcz we needed upload variable inside the post one.
-
+app.post("/posts", verifyToken, upload.single("picture"))
 // Routes
 app.use("/auth",authRoutes);
-
+app.use("/users",userRoutes);
+app.use("/posts",postRoutes);
 
 // MOngoose 
 const PORT = process.env.PORT || 6001;
